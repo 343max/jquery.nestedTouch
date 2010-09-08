@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="css/style.css">
+	<!-- <script type="text/javascript" src="https://getfirebug.com/firebug-lite-beta.js#startOpenedXX"></script> -->
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1, maximum-scale=1" />
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cssAnimation.js"></script>
+	<script type="text/javascript" src="js/jquery.touch.js"></script>
+	<script type="text/javascript">
+
+$().ready(function() {
+	$('#drag .hBar').touchDrag({boundingElement: $('#drag'), direction: 'vertical'});
+	$('#drag .slider').touchDrag({boundingElement: $('#drag .hBar'), direction: 'horizontal'});
+
+	$('#dragElastic .hBar').touchDrag({boundingElement: $('#dragElastic'), direction: 'vertical', elastic: true});
+	$('#dragElastic .slider').touchDrag({boundingElement: $('#dragElastic .hBar'), direction: 'horizontal', elastic: true});
+
+	$('#dragElasticHello .hBar').touchDrag({boundingElement: $('#dragElasticHello'), direction: 'vertical', elastic: true});
+	$('#dragElasticHello .slider').touchDrag({boundingElement: $('#dragElasticHello .hBar'), direction: 'horizontal', elastic: true});
+
+	$('#dragExclusive .hBar').touchDrag({boundingElement: $('#dragExclusive'), direction: 'vertical', abortOnWrongDirection: true});
+	$('#dragExclusive .slider').touchDrag({boundingElement: $('#dragExclusive .hBar'), direction: 'horizontal', abortOnWrongDirection: true});
+
+});
+
+	</script>
+</head>
+<body>
+<div id="speedometer" style="position: absolute; top: 10px; left: 10px; width: 200px; background-color: white"></div>
+<div class="floatLeft">
+	<div style="width: 330px">
+		Nested:
+		<div id="drag" class="area"><div class="hBar"><div class="slider"></div></div></div>
+	</div>
+
+	<div style="width: 330px">
+		Nested Elastic:
+		<div id="dragElastic" class="area"><div class="hBar"><div class="slider"></div></div></div>				
+	</div>
+
+	<div style="width: 330px">
+		Nested Elastic with a link:
+		<div id="dragElasticHello" class="area"><div class="hBar"><div class="slider" style="width: 90px; text-align: center; background-color: #eee"><a href="javascript:alert('hello!')">Say Hello!</a></div></div></div>				
+	</div>
+
+	<div style="width: 330px">
+		Nested exclusive (allow dragging only in one direction):
+		<div id="dragExclusive" class="area"><div class="hBar"><div class="slider"></div></div></div>
+	</div>
+</div>
+</body>
+</html>

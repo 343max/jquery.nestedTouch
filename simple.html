@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="css/style.css">
+	<!-- <script type="text/javascript" src="https://getfirebug.com/firebug-lite-beta.js#startOpenedXX"></script> -->
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1, maximum-scale=1" />
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cssAnimation.js"></script>
+	<script type="text/javascript" src="js/jquery.touch.js"></script>
+	<script type="text/javascript">
+
+$().ready(function() {
+	$('#drag .slider').touchDrag({boundingElement: $('#drag')});
+	$('#dragElastic .slider').touchDrag({boundingElement: $('#dragElastic'), elastic: true, kinetic: true, kineticDuration: 100});
+	$('#dragHorizontal .slider').touchDrag({direction: 'horizontal', boundingElement: $('#dragHorizontal')});
+	$('#dragVertical .slider').touchDrag({direction: 'vertical', boundingElement: $('#dragVertical')});
+	$('#dragVerticalElastic .slider').touchDrag({direction: 'vertical', elastic: true, boundingElement: $('#dragVerticalElastic')});
+});
+
+	</script>
+	<style type="text/css">
+
+#speedometer {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 30px;
+	background-color: white;
+	z-index: 10;
+}
+
+	</style>
+</head>
+<body>
+
+<div id="speedometer">
+
+</div>
+
+<div class="floatLeft">
+	<div  style="width: 330px">
+		Drag:
+		<div id="drag" class="area"><div class="slider"></div></div>
+	</div>
+
+	<div  style="width: 330px">
+		Drag Elastic & Kinetic:
+		<div id="dragElastic" class="area"><div class="slider"></div></div>
+	</div>
+
+	<div style="width: 60px">
+		Drag Vertical:
+		<div id="dragVertical" class="area"><div class="slider"></div></div>
+	</div>
+	<div style="width: 60px">
+		Drag elastic Vertical:
+		<div id="dragVerticalElastic" class="area"><div class="slider"></div></div>
+	</div>
+
+	<div  style="width: 330px">
+		Drag Horizontal:
+		<div id="dragHorizontal" class="area"><div class="slider"></div></div>
+	</div>
+</div>
+
+</body>
+</html>

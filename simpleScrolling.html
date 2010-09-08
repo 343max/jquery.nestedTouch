@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="css/style.css">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1, maximum-scale=1" />
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cssAnimation.js"></script>
+	<script type="text/javascript" src="js/jquery.touch.js"></script>
+	<script type="text/javascript">
+
+$().ready(function() {
+	/*var content = $('div.content');
+	var boundingBox = $('div.boundingBox');
+	var box = {
+		top: boundingBox.height() - content.height(),
+		left: 0,
+		right: content.width(),
+		bottom: content.height()
+	};
+	content.touchDrag({boundingBox: box, direction: 'vertical', elastic: true, kinetic: true});
+	*/
+
+	$('div.content').touchScroll({boundingElement: $('div.boundingBox'), direction: 'vertical'});
+	
+});
+
+	</script>
+<style>
+
+body {
+	background-color: black;
+}
+
+div.boundingBox {
+	background-color: white;
+	-webkit-border-radius: 5px;
+
+	padding: 0;
+
+	width: 500px;
+	height: 400px;
+	margin-left: auto;
+	margin-right: auto;
+
+	overflow: hidden;
+
+	-webkit-background-clip: padding-box;
+
+	position: relative;
+}
+
+div.content {
+	margin: 0;
+	padding: 0 25px 0 25px;
+	position: absolute;
+}
+
+</style>
+</head>
+<body>
+
+<div class="boundingBox">
+
+	<div class="content">
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla arcu sapien, lobortis vitae sagittis lacinia, consectetur quis neque. Pellentesque rutrum neque et mi feugiat ac placerat orci posuere. Duis suscipit cursus tellus, sed pretium nisi tincidunt a. Mauris purus nisi, scelerisque eget ultricies nec, semper non est. Proin blandit pretium semper. Quisque sagittis dui sit amet tellus dictum sed rutrum nibh malesuada. Curabitur facilisis elit eget lorem convallis malesuada. Donec quis libero ut lacus eleifend dictum ac ac elit. Donec bibendum aliquam ligula, eu scelerisque metus tristique quis. Mauris malesuada arcu vel elit porta eu fermentum tellus laoreet. Morbi vitae consectetur tellus. Cras ut arcu in dui eleifend laoreet ac sit amet urna. Quisque volutpat hendrerit turpis nec gravida.</p>
+		<p>Donec et massa vel nunc imperdiet faucibus. Pellentesque a lectus ipsum. Phasellus ac nunc eget massa ullamcorper lobortis. Donec condimentum tellus at arcu ultricies ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam mollis erat, at accumsan augue dignissim molestie. Morbi ac viverra mi. Nam a turpis vitae sem vehicula tincidunt eu a massa. Morbi ultricies luctus sollicitudin. Pellentesque condimentum interdum est ac aliquam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer id velit nunc, eget vulputate nisl. Maecenas posuere mi quis libero facilisis ut pretium tortor gravida.</p>
+		<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam ultrices urna a neque convallis nec dignissim felis bibendum. Suspendisse vitae lectus risus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed faucibus, enim at tempus egestas, urna odio bibendum quam, in mattis ipsum leo vitae justo. Sed leo eros, tristique nec dictum quis, lobortis sit amet magna. Donec vehicula magna quis sapien posuere sit amet hendrerit metus tincidunt. Curabitur luctus pretium metus, sit amet tempor odio scelerisque quis. Suspendisse at magna vitae lorem aliquet aliquet. Quisque at est non lectus dapibus pellentesque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
+		<p>Sed vehicula arcu ligula, adipiscing dictum nisl. Donec sed arcu risus. Mauris id metus augue, ac commodo tortor. Sed eget enim mauris, sed pharetra ante. Vivamus facilisis mi vitae lorem consequat pellentesque. Integer commodo, turpis at placerat tempor, libero ipsum lacinia augue, quis fermentum orci metus nec orci. Praesent eu eros diam, eget sollicitudin turpis. Sed vitae erat vitae arcu tempus malesuada. In neque enim, aliquet id porttitor at, congue in dolor. Etiam rhoncus eros vitae nunc feugiat sollicitudin tincidunt sapien congue. Phasellus consequat, quam sed suscipit facilisis, metus velit ornare lacus, eu ultricies turpis lorem ac nibh. Quisque vulputate scelerisque odio sed bibendum. Aenean libero risus, interdum sit amet blandit at, placerat sed tellus. Etiam ac erat et felis auctor aliquet. Donec et dolor pharetra lectus vehicula auctor. Aenean libero mi, consectetur nec dignissim dignissim, vehicula id nisi.</p>
+		<p>Etiam vel erat a leo vestibulum rhoncus eget eu orci. Fusce volutpat iaculis eros nec commodo. Donec lorem sapien, venenatis at accumsan eu, consectetur rhoncus sapien. Morbi iaculis dui quis urna consequat sollicitudin. Donec in turpis sit amet risus vestibulum porta. Praesent non sem mi, ac fringilla leo. Curabitur sit amet arcu eget justo blandit fringilla ut sit amet nisi. Suspendisse sem nisl, bibendum nec cursus mattis, scelerisque ac justo. Duis mauris purus, porta id suscipit nec, placerat vel nisl. Aenean sed libero eget turpis accumsan pellentesque. Integer non enim urna, blandit ullamcorper eros. Donec auctor est viverra dui cursus quis posuere orci ornare. Nam ut turpis nibh, tempus vulputate felis. Mauris venenatis bibendum nisl. Etiam elementum ligula sed lectus vehicula fermentum. Phasellus accumsan turpis sed eros placerat euismod. Suspendisse placerat imperdiet felis ut tempus.</p>
+	</div>
+
+</div>
+
+</body>
+</html>
