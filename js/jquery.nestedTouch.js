@@ -8,7 +8,6 @@ jQuery.fn.setWebkitPosition = function(x, y) {
 jQuery.fn.setWebkitPositionAnimated = function(x, y, duration, timingFunction, callback) {
 	if(!duration) duration = 500;
 	if(!timingFunction) timingFunction = 'ease-out';
-	//this.animateWithCss({'-webkit-transform': 'translate(' + x + 'px, ' +y + 'px)'}, animationSpeed, timingFunction, callback);
 
 	$this = this;
 
@@ -39,7 +38,12 @@ jQuery.fn.touchDrag = function(settings) {
 		kinetic: false,
 		kineticDuration: 700,
 		kineticTimingFunction: 'ease-out',
-		abortOnWrongDirection: false
+		abortOnWrongDirection: false,
+		onDragStart: null,
+		onDragMove: null,
+		onDragEnd: null,
+		onKineticMovementEnd: null,
+		onSnapBackEnd: null
 	}, settings);
 
 	if(settings.boundingElement) {
@@ -57,8 +61,29 @@ jQuery.fn.touchDrag = function(settings) {
 
 	if(settings.kinetic) settings.elastic = true;
 
+	var execCallback = function(callbacks, params) {
+		if(!callbacks) return;
+		if(typeof(callbacks == 'function')) callbacks = [callbacks];
+
+		params.boundingBox = settings.boundingBox;
+
+		//console.log((params.top - settings.boundingBox.top) + ' - ' + (settings.boundingBox.bottom - settings.boundingBox.top));
+		params.relativePositionY = (params.top - settings.boundingBox.top) / (settings.boundingBox.bottom - settings.boundingBox.top);
+		params.relativePositionX = (params.left - settings.boundingBox.left) / (settings.boundingBox.right - settings.boundingBox.left);
+
+		$.each(callbacks, function() {
+			var fn = $.proxy(this, $this);
+			fn(params);
+		});
+	}
+
+	var regularInterval = null;
+	var lastEvent = null;
+
 	$.each(this, function() {
 		this.ontouchstart = function(e) {
+
+			window.setInterval()
 			e.preventDefault();
 			return $(this).trigger('ontouchstart', [e]);
 		}
@@ -95,12 +120,14 @@ jQuery.fn.touchDrag = function(settings) {
 		var time = (new Date()).getTime();
 
 		var position = $this.position();
-		var lastTop = position.top;
-		var lastLeft = position.left;
+		var top = lastTop = position.top;
+		var left = lastLeft = position.left;
 
 		var firstTouch = { clientX: touchEvent.touches[0].clientX, clientY: touchEvent.touches[0].clientY };
 		
 		var offset = {deltaX: touchEvent.touches[0].clientX - position.left, deltaY: touchEvent.touches[0].clientY - position.top};
+
+		execCallback(settings.onDragStart, {'top': top, 'left': left});
 
 		$this.live('ontouchmove', function(jEvent, touchEvent) {
 			if (touchEvent.touches.length != 1)
@@ -148,6 +175,8 @@ jQuery.fn.touchDrag = function(settings) {
 				time = newTime;
 			}
 
+			execCallback(settings.onDragMove, {'top': top, 'left': left});
+
 			$this.setWebkitPosition(left, top);
 
 			lastTop = top;
@@ -155,13 +184,18 @@ jQuery.fn.touchDrag = function(settings) {
 		});
 
 		$this.live('ontouchend', function(jEvent, touchEvent) {
+			
 			$this.die('ontouchmove');
 			$this.die('ontouchend');
 
 			if(!settings.elastic) {
-				var snapBack = function() {};
+				var snapBack = function() {
+					execCallback(settings.onKineticMovementEnd, {'top': top, 'left': left});
+				};
 			} else {
 				var snapBack = function() {
+					execCallback(settings.onKineticMovementEnd, {'top': top, 'left': left});
+
 					var currentPosition = $this.position();
 					var finalPosition = {left: currentPosition.left,  top: currentPosition.top};
 
@@ -176,7 +210,9 @@ jQuery.fn.touchDrag = function(settings) {
 					}
 
 					if((currentPosition.top != finalPosition.top) || (currentPosition.left != finalPosition.left)) {
-						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.elasticAnimationTimingFunction);
+						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.elasticAnimationTimingFunction, function() { execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});  });
+					} else {
+						execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});
 					}
 				};
 			}
@@ -213,24 +249,4 @@ jQuery.fn.touchDrag = function(settings) {
 			return margin - (margin - pos) / 2;
 		}
 	}
-}
-
-jQuery.fn.touchScroll = function(settings) {
-	if(!settings) settings = {};
-
-	if(settings.boundingElement) {
-		settings.boundingBox = {
-			top: settings.boundingElement.height() - this.height(),
-			left: settings.boundingElement.width() - this.width(),
-			right: this.width(),
-			bottom: this.height()
-		}
-		settings.boundingElement = null;
-	}
-
-	if(!settings.elasticDuration) settings.elasticDuration = 600;
-
-	settings.kinetic = true;
-
-	this.touchDrag(settings);
 }

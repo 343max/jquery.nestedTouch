@@ -2,6 +2,7 @@ nestedTouch is another touch Plugin for jQuery that enables dragging objects on 
 
 what can nestedTouch do for you?
 
+- scroll indicators: these tiny little rounded boxes, which indicate your scroll position (vertical only for now)
 - elastic dragging: move something over the edge and it will snap back
 - kinetic dragging: give an object an push and it will move a little bit further
 - scrolling: scroll an object with tailing & elastic borders (far away from being perfect)
@@ -9,6 +10,8 @@ what can nestedTouch do for you?
 - exclusive nested dragging: place an horizontal moveable object inside an vertical moveable object or vice versa. Will work only in one direction every time. Allows funcky scroll & show options panels a seen in Twitter for iPhone/iPad, Reeder and many other iOS Apps.
 
 Coming up next:
+- scroll indicator will get an relaitve length, not everytime 40 pixels
+- horizontal scrolling
+- less flickering (hopefully)
 - events: pleanty of events to control every aspect of of your dragging and snapping
 - clickable links inside the dragger. neccasary for every good scroller
-- scroll indicators: one of these tiny little boxes that show you your current location inside the scroller.

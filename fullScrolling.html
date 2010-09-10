@@ -11,7 +11,7 @@
 	<script type="text/javascript">
 
 $().ready(function() {
-	$('div.content').touchScroll({boundingElement: $('div.boundingBox'), direction: 'vertical'});	
+	$('div.content').touchScrollIndicator({boundingElement: $('div.boundingBox')});
 });
 
 	</script>
@@ -34,15 +34,16 @@ div.boundingBox {
 
 	overflow: hidden;
 
-	-webkit-background-clip: padding-box;
+	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,1)));
 
 	position: relative;
 }
 
 div.content {
-	margin: 0;
-	padding: 0 25px 0 25px;
+	margin: 0 25px;
 	position: absolute;
+
+	background-color: white;
 }
 
 </style>
