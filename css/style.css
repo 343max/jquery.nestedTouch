@@ -31,7 +31,7 @@ div.hBar {
 	position: relative;
 }
 
-div#dragHorizontal {
+div#dragHorizontal, div#dragHorizontalSnap {
 	height: 50px;
 }
 

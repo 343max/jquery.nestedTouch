@@ -16,27 +16,12 @@ $().ready(function() {
 	$('#dragHorizontal .slider').touchDrag({direction: 'horizontal', boundingElement: $('#dragHorizontal')});
 	$('#dragVertical .slider').touchDrag({direction: 'vertical', boundingElement: $('#dragVertical')});
 	$('#dragVerticalElastic .slider').touchDrag({direction: 'vertical', elastic: true, boundingElement: $('#dragVerticalElastic')});
+	$('#dragHorizontalSnap .slider').touchDrag({direction: 'horizontal', boundingElement: $('#dragHorizontalSnap'), snapTo: [{top: 0, left: 0}, {top: 0, left: 105}, {top: 0, left: 210}], kineticDuration: 200, kineticTimingFunction: 'ease-in'});
 });
 
 	</script>
-	<style type="text/css">
-
-#speedometer {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	width: 30px;
-	background-color: white;
-	z-index: 10;
-}
-
-	</style>
 </head>
 <body>
-
-<div id="speedometer">
-
-</div>
 
 <div class="floatLeft">
 	<div  style="width: 330px">
@@ -44,7 +29,7 @@ $().ready(function() {
 		<div id="drag" class="area"><div class="slider"></div></div>
 	</div>
 
-	<div  style="width: 330px">
+	<div style="width: 330px">
 		Drag Elastic & Kinetic:
 		<div id="dragElastic" class="area"><div class="slider"></div></div>
 	</div>
@@ -61,6 +46,11 @@ $().ready(function() {
 	<div  style="width: 330px">
 		Drag Horizontal:
 		<div id="dragHorizontal" class="area"><div class="slider"></div></div>
+	</div>
+
+	<div  style="width: 330px">
+		Drag Horizontal Snap (snpa to left, middle or right position):
+		<div id="dragHorizontalSnap" class="area"><div class="slider"></div></div>
 	</div>
 </div>
 

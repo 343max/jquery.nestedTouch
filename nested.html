@@ -19,9 +19,13 @@ $().ready(function() {
 
 	$('#dragElasticHello .hBar').touchDrag({boundingElement: $('#dragElasticHello'), direction: 'vertical', elastic: true});
 	$('#dragElasticHello .slider').touchDrag({boundingElement: $('#dragElasticHello .hBar'), direction: 'horizontal', elastic: true});
+	$('#dragElasticHello .slider').click(function() {
+		alert('Hello!');
+	})
 
 	$('#dragExclusive .hBar').touchDrag({boundingElement: $('#dragExclusive'), direction: 'vertical', abortOnWrongDirection: true});
 	$('#dragExclusive .slider').touchDrag({boundingElement: $('#dragExclusive .hBar'), direction: 'horizontal', abortOnWrongDirection: true});
+
 });
 
 	</script>
@@ -41,7 +45,7 @@ $().ready(function() {
 
 	<div style="width: 330px">
 		Nested Elastic with a link:
-		<div id="dragElasticHello" class="area"><div class="hBar"><div class="slider" style="width: 90px; text-align: center; background-color: #eee"><a href="javascript:alert('hello!')">Say Hello!</a></div></div></div>				
+		<div id="dragElasticHello" class="area"><div class="hBar"><div class="slider" style="width: 90px; text-align: center; background-color: #eee"><a href="#" id="hello"><span>Say Hello!</span></a></div></div></div>				
 	</div>
 
 	<div style="width: 330px">

@@ -38,6 +38,7 @@ jQuery.fn.touchDrag = function(settings) {
 		kinetic: false,
 		kineticDuration: 700,
 		kineticTimingFunction: 'ease-out',
+		snapTo: null,
 		abortOnWrongDirection: false,
 		onDragStart: null,
 		onDragMove: null,
@@ -59,7 +60,12 @@ jQuery.fn.touchDrag = function(settings) {
 	if(settings.direction == 'vertical') settings.dragHorizontal = false;
 	if(settings.direction == 'horizontal') settings.dragVertical = false;
 
+	if(settings.snapTo) settings.kinetic = true;
 	if(settings.kinetic) settings.elastic = true;
+
+	var distance = function(p1, p2) {
+		return Math.sqrt(Math.pow(p1.top - p2.top,  2) + Math.pow(p1.left - p2.left, 2));
+	}
 
 	var execCallback = function(callbacks, params) {
 		if(!callbacks) return;
@@ -82,8 +88,6 @@ jQuery.fn.touchDrag = function(settings) {
 
 	$.each(this, function() {
 		this.ontouchstart = function(e) {
-
-			window.setInterval()
 			e.preventDefault();
 			return $(this).trigger('ontouchstart', [e]);
 		}
@@ -102,7 +106,7 @@ jQuery.fn.touchDrag = function(settings) {
 	if(settings.elastic) {
 		$this.css({
 			'-webkit-transition-property': '-webkit-transform',
-			'-webkit-transition-timing-function': 'ease-out',
+			'-webkit-transition-timing-function': settings.elasticAnimationTimingFunction,
 			'-webkit-transition-duration': '0'
 		});
 	}
@@ -120,6 +124,9 @@ jQuery.fn.touchDrag = function(settings) {
 		var time = (new Date()).getTime();
 
 		var position = $this.position();
+		var startTime = (new Date()).getTime();
+		var currentTouchPosition = startTouchPosition = {top: touchEvent.touches[0].clientY, left: touchEvent.touches[0].clientX };
+		
 		var top = lastTop = position.top;
 		var left = lastLeft = position.left;
 
@@ -127,16 +134,17 @@ jQuery.fn.touchDrag = function(settings) {
 		
 		var offset = {deltaX: touchEvent.touches[0].clientX - position.left, deltaY: touchEvent.touches[0].clientY - position.top};
 
-		execCallback(settings.onDragStart, {'top': top, 'left': left});
+		execCallback(settings.onDragStart, position);
 
 		$this.live('ontouchmove', function(jEvent, touchEvent) {
 			if (touchEvent.touches.length != 1)
 				return false;
 
+			currentTouchPosition = {top: touchEvent.touches[0].clientY, left: touchEvent.touches[0].clientX };
+
 			if(firstTouch != null && settings.abortOnWrongDirection) {
 				var deltaX = touchEvent.touches[0].clientX - firstTouch.clientX;
 				var deltaY = touchEvent.touches[0].clientY - firstTouch.clientY;
-				//$('#speedometer').text($('#speedometer').text() + ' / ' + $this[0].toString() + ': ' + deltaX + ', ' + deltaY);
 
 				var horizontal = Math.abs(deltaX) > Math.abs(deltaY);
 
@@ -184,9 +192,13 @@ jQuery.fn.touchDrag = function(settings) {
 		});
 
 		$this.live('ontouchend', function(jEvent, touchEvent) {
-			
+
 			$this.die('ontouchmove');
 			$this.die('ontouchend');
+
+			if(distance(startTouchPosition, currentTouchPosition) == 0) {
+				$(touchEvent.target.nodeName == '#text' ? touchEvent.target.parentNode : touchEvent.target).trigger('click');
+			}
 
 			if(!settings.elastic) {
 				var snapBack = function() {
@@ -209,6 +221,7 @@ jQuery.fn.touchDrag = function(settings) {
 						if(finalPosition.top > settings.boundingBox.bottom) finalPosition.top = settings.boundingBox.bottom;
 					}
 
+
 					if((currentPosition.top != finalPosition.top) || (currentPosition.left != finalPosition.left)) {
 						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.elasticAnimationTimingFunction, function() { execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});  });
 					} else {
@@ -225,16 +238,34 @@ jQuery.fn.touchDrag = function(settings) {
 				position.top -= ySpeed / 1000 * settings.kineticDuration;
 				position.left -= xSpeed / 1000 * settings.kineticDuration;
 
-				var margin = 200;
+				if(settings.snapTo) {
+					var finalPosition = position;
+					var bestSnapPoint = -1;
+					var bestDistance = 100000000;
 
-				if(settings.dragHorizontal) {
-					if(position.left < settings.boundingBox.left - margin) position.left = settings.boundingBox.left - margin;
-					if(position.left > settings.boundingBox.righ + margin) position.left = settings.boundingBox.right + margin;
-				}
+					$.each(settings.snapTo, function(i) {
+						var d = distance(position, this);
+						if(d < bestDistance) {
+							bestDistance = d;
+							finalPosition = this;
+							bestSnapPoint = i;
+						}
+					});
 
-				if(settings.dragVertical) {
-					if(position.top < settings.boundingBox.top - margin) position.top = settings.boundingBox.top - margin;
-					if(position.top > settings.boundingBox.bottom + margin) position.top = settings.boundingBox.bottom + margin;
+					position = finalPosition;
+
+				} else {
+					var margin = 200;
+
+					if(settings.dragHorizontal) {
+						if(position.left < settings.boundingBox.left - margin) position.left = settings.boundingBox.left - margin;
+						if(position.left > settings.boundingBox.righ + margin) position.left = settings.boundingBox.right + margin;
+					}
+
+					if(settings.dragVertical) {
+						if(position.top < settings.boundingBox.top - margin) position.top = settings.boundingBox.top - margin;
+						if(position.top > settings.boundingBox.bottom + margin) position.top = settings.boundingBox.bottom + margin;
+					}
 				}
 
 				$this.setWebkitPositionAnimated(position.left, position.top, settings.kineticDuration, settings.kineticTimingFunction, snapBack);
