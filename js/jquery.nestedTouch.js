@@ -1,4 +1,4 @@
-if (!console.dir) console.dir = function(a) { console.log(a); };
+if (!console.dir) console.dir = function(a) { console.log(JSON.stringify(a)); };
 
 
 jQuery.fn.setWebkitPosition = function(x, y) { 
@@ -221,11 +221,14 @@ jQuery.fn.touchDrag = function(settings) {
 						if(finalPosition.top > settings.boundingBox.bottom) finalPosition.top = settings.boundingBox.bottom;
 					}
 
+					var snapBackEndCallback = function() {
+						execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});
+					}
 
 					if((currentPosition.top != finalPosition.top) || (currentPosition.left != finalPosition.left)) {
-						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.elasticAnimationTimingFunction, function() { execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});  });
+						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.elasticAnimationTimingFunction, snapBackEndCallback);
 					} else {
-						execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});
+						snapBackEndCallback();
 					}
 				};
 			}

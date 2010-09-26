@@ -19,7 +19,6 @@ jQuery.fn.touchScroll = function(settings) {
 	this.touchDrag(settings);
 }
 
-
 jQuery.fn.touchScrollIndicator = function(settings) {
 	
 	settings = jQuery.extend({
@@ -36,11 +35,10 @@ jQuery.fn.touchScrollIndicator = function(settings) {
 				if(scrollBoxHeight + top > scrollBarHeight) tmpHeight = scrollBarHeight - top;
 
 				if(top != lastTop) {
-					//console.log(top);
 					scrollBox.setWebkitPosition(0, top);
 					lastTop = top;
 				}
-				//scrollBox.css('height', tmpHeight + 'px');
+
 			}, 100);
 		},
 
@@ -55,7 +53,7 @@ jQuery.fn.touchScrollIndicator = function(settings) {
 
 	var scrollBarHeight = boundingBox.height() - 10;
 	var fullHeight = $this.height() - boundingBox.height();
-	var scrollBoxHeight = 40;
+	var scrollBoxHeight = Math.min(boundingBox.height() / $this.height() * scrollBarHeight, scrollBarHeight);
 
 	var scrollBar = $('<div>').css( {
 		'width': '6px',
