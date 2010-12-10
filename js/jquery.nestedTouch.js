@@ -1,25 +1,29 @@
 if (!console.dir) console.dir = function(a) { console.log(JSON.stringify(a)); };
 
-
-jQuery.fn.setWebkitPosition = function(x, y) { 
-	this.css('-webkit-transform', 'translate(' + x + 'px, ' + y + 'px)');
+jQuery.clientSupportsTouch = function() {
+	return !(document.ontouchmove === undefined);
 }
 
-jQuery.fn.setWebkitPositionAnimated = function(x, y, duration, timingFunction, callback) {
+jQuery.fn.setWebkitPosition = function(x, y, translate3d) {
+	if(translate3d) {
+		this.css('-webkit-transform', 'translate3d(' + x + 'px, ' + y + 'px, 0px)');
+	} else {
+		this.css('-webkit-transform', 'translate(' + x + 'px, ' + y + 'px)');		
+	}
+}
+
+jQuery.fn.setWebkitPositionAnimated = function(x, y, duration, translate3d, timingFunction, callback) {
 	if(!duration) duration = 500;
 	if(!timingFunction) timingFunction = 'ease-out';
 
 	$this = this;
 
-	$this.css( {
-		'-webkit-transition-duration': duration + 'ms',
-		'-webkit-transform': 'translate(' + x + 'px, ' + y + 'px)'
-	} );
+	$this.css('-webkit-transition-duration', duration + 'ms');
+	$this.setWebkitPosition(x, y, translate3d);
 
 	window.setTimeout(function() {
 		$this.css('-webkit-transition-duration', '0');
 		if(callback) callback();
-		
 	}, duration + 50);
 }
 
@@ -37,6 +41,7 @@ jQuery.fn.touchDrag = function(settings) {
 		elasticAnimationTimingFunction: 'ease-out',
 		kinetic: false,
 		kineticDuration: 700,
+		maxSpeed: 1200,
 		kineticTimingFunction: 'ease-out',
 		snapTo: null,
 		abortOnWrongDirection: false,
@@ -44,7 +49,9 @@ jQuery.fn.touchDrag = function(settings) {
 		onDragMove: null,
 		onDragEnd: null,
 		onKineticMovementEnd: null,
-		onSnapBackEnd: null
+		onSnapBackEnd: null,
+		animationCssClass: null,
+		translate3d: false
 	}, settings);
 
 	if(settings.boundingElement) {
@@ -64,7 +71,7 @@ jQuery.fn.touchDrag = function(settings) {
 	if(settings.kinetic) settings.elastic = true;
 
 	var distance = function(p1, p2) {
-		return Math.sqrt(Math.pow(p1.top - p2.top,  2) + Math.pow(p1.left - p2.left, 2));
+		return Math.sqrt(Math.pow(p1.top - p2.top, 2) + Math.pow(p1.left - p2.left, 2));
 	}
 
 	var execCallback = function(callbacks, params) {
@@ -73,7 +80,6 @@ jQuery.fn.touchDrag = function(settings) {
 
 		params.boundingBox = settings.boundingBox;
 
-		//console.log((params.top - settings.boundingBox.top) + ' - ' + (settings.boundingBox.bottom - settings.boundingBox.top));
 		params.relativePositionY = (params.top - settings.boundingBox.top) / (settings.boundingBox.bottom - settings.boundingBox.top);
 		params.relativePositionX = (params.left - settings.boundingBox.left) / (settings.boundingBox.right - settings.boundingBox.left);
 
@@ -136,6 +142,8 @@ jQuery.fn.touchDrag = function(settings) {
 
 		execCallback(settings.onDragStart, position);
 
+		if(settings.animationCssClass != null) $this.addClass(settings.animationCssClass);
+
 		$this.live('ontouchmove', function(jEvent, touchEvent) {
 			if (touchEvent.touches.length != 1)
 				return false;
@@ -177,18 +185,26 @@ jQuery.fn.touchDrag = function(settings) {
 				var newTime = (new Date()).getTime();
 				var dTime = newTime - time;
 
-				xSpeed = (lastLeft - left) / dTime * 1000;
-				ySpeed = (lastTop - top) / dTime * 1000;
+				if(dTime > 20) {
+					xSpeed = (lastLeft - left) / dTime * 1000;
+					ySpeed = (lastTop - top) / dTime * 1000;
 
-				time = newTime;
+					if(xSpeed > settings.maxSpeed) xSpeed = settings.maxSpeed;
+					if(xSpeed < -settings.maxSpeed) xSpeed = -settings.maxSpeed;
+					if(ySpeed > settings.maxSpeed) ySpeed = settings.maxSpeed;
+					if(ySpeed < -settings.maxSpeed) ySpeed = -settings.maxSpeed;
+
+					lastTop = top;
+					lastLeft = left;
+
+					time = newTime;
+				}
+
 			}
 
 			execCallback(settings.onDragMove, {'top': top, 'left': left});
 
-			$this.setWebkitPosition(left, top);
-
-			lastTop = top;
-			lastLeft = left;
+			$this.setWebkitPosition(left, top, settings.translate3d);
 		});
 
 		$this.live('ontouchend', function(jEvent, touchEvent) {
@@ -223,10 +239,11 @@ jQuery.fn.touchDrag = function(settings) {
 
 					var snapBackEndCallback = function() {
 						execCallback(settings.onSnapBackEnd, {'top': top, 'left': left});
+						if(settings.animationCssClass != null) $this.removeClass(settings.animationCssClass);
 					}
 
 					if((currentPosition.top != finalPosition.top) || (currentPosition.left != finalPosition.left)) {
-						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.elasticAnimationTimingFunction, snapBackEndCallback);
+						$this.setWebkitPositionAnimated(finalPosition.left, finalPosition.top, settings.elasticDuration, settings.translate3d, settings.elasticAnimationTimingFunction, snapBackEndCallback);
 					} else {
 						snapBackEndCallback();
 					}
@@ -255,6 +272,8 @@ jQuery.fn.touchDrag = function(settings) {
 						}
 					});
 
+					if(finalPosition.snapedIn) finalPosition.snapedIn();
+
 					position = finalPosition;
 
 				} else {
@@ -271,7 +290,7 @@ jQuery.fn.touchDrag = function(settings) {
 					}
 				}
 
-				$this.setWebkitPositionAnimated(position.left, position.top, settings.kineticDuration, settings.kineticTimingFunction, snapBack);
+				$this.setWebkitPositionAnimated(position.left, position.top, settings.kineticDuration, settings.translate3d, settings.kineticTimingFunction, snapBack);
 			}
 		});
 	});

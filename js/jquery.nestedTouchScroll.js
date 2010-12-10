@@ -1,6 +1,10 @@
 
 jQuery.fn.touchScroll = function(settings) {
-	settings = jQuery.extend({ }, settings);
+	settings = jQuery.extend({
+		kinetic: true,
+		translate3d: true,
+		elasticDuration: 600
+	}, settings);
 
 	if(settings.boundingElement) {
 		settings.boundingBox = {
@@ -11,10 +15,6 @@ jQuery.fn.touchScroll = function(settings) {
 		}
 		settings.boundingElement = null;
 	}
-
-	if(!settings.elasticDuration) settings.elasticDuration = 600;
-
-	settings.kinetic = true;
 
 	this.touchDrag(settings);
 }
