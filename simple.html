@@ -10,13 +10,20 @@
 	<script type="text/javascript" src="js/jquery.nestedTouch.js"></script>
 	<script type="text/javascript">
 
+function snapedIn(msg) {
+	$('#currentPosition').text(msg);
+}
+
 $().ready(function() {
 	$('#drag .slider').touchDrag({boundingElement: $('#drag')});
 	$('#dragElastic .slider').touchDrag({boundingElement: $('#dragElastic'), elastic: true, kinetic: true, kineticDuration: 100});
 	$('#dragHorizontal .slider').touchDrag({direction: 'horizontal', boundingElement: $('#dragHorizontal')});
 	$('#dragVertical .slider').touchDrag({direction: 'vertical', boundingElement: $('#dragVertical')});
 	$('#dragVerticalElastic .slider').touchDrag({direction: 'vertical', elastic: true, boundingElement: $('#dragVerticalElastic')});
-	$('#dragHorizontalSnap .slider').touchDrag({direction: 'horizontal', boundingElement: $('#dragHorizontalSnap'), snapTo: [{top: 0, left: 0}, {top: 0, left: 105}, {top: 0, left: 210}], kineticDuration: 200, kineticTimingFunction: 'ease-in'});
+	$('#dragHorizontalSnap .slider').touchDrag({direction: 'horizontal', boundingElement: $('#dragHorizontalSnap'), snapTo: [
+	{top: 0, left: 0, snapedIn: function() { snapedIn('left'); }},
+	{top: 0, left: 105, snapedIn: function() { snapedIn('center'); }},
+	{top: 0, left: 210, snapedIn: function() { snapedIn('right'); }}], kineticDuration: 200, kineticTimingFunction: 'ease-in'});
 });
 
 	</script>
@@ -48,9 +55,11 @@ $().ready(function() {
 		<div id="dragHorizontal" class="area"><div class="slider"></div></div>
 	</div>
 
-	<div  style="width: 330px">
-		Drag Horizontal Snap (snpa to left, middle or right position):
+	<div  style="width: 330px; height: 100px">
+		Drag Horizontal Snap:
+		<p id="currentPosition">-</p>
 		<div id="dragHorizontalSnap" class="area"><div class="slider"></div></div>
+		<p>&nbsp;</p>
 	</div>
 </div>
 
